@@ -1,8 +1,10 @@
 graphics.off()
 rm(list = ls())
 
+# Set work directory where data is located
 set.dir.main = paste("C:/Users/Alexander Looi/Google Drive/Dropbox/NOAA_Wetlands_Ceili-Alex/",
                      "Alex's Folder/Historical Weather Data", sep = "")
+
 
 Start.year = 1900
 End.year = 2014
@@ -192,7 +194,8 @@ da.p = missing.data[p.da.vec, 5]
 
 # Boxplots mean daily prcp 15 year segments
 
-png(filename = paste("Boxplots 1893-2014 mean daily prcp 15 year segments and annual mean.jpg", 
+png(filename = paste("Boxplots 1893-2014 mean daily prcp ",
+                     "15 year segments and annual mean.jpg", 
                      sep = ""),
     width = 1600, height = 1000)
 layout(matrix(c(1,2), 1,2), height = c(1,1))

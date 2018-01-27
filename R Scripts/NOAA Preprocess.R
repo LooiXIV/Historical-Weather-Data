@@ -52,7 +52,7 @@ Work.Dir = "C:/Users/Alex Looi/Desktop/Map Shed"
 NOAA.File.Number = "551891"
 ###############################################################
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!#
-#!              DON'T EDIT CODE PASTE THIS LINE!             !#
+#!              DON'T EDIT CODE PAST THIS LINE!             !#
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!#
 ###############################################################
 # set the work directory with the work directory you specified

@@ -28,6 +28,10 @@ e.y = 2014
 # Select the time interval 
 interval = 10
 
+######################################################################
+# Don't Edit code past this line #
+######################################################################
+
 # calculate the total number of possible sequential "n" year 
 # intervals there are
 loop.len = (e.y-s.y-interval)
@@ -38,13 +42,16 @@ num.nas = data.frame(rep(0, loop.len),
                      rep(0, loop.len), rep(0, loop.len),
                      rep(0, loop.len), rep(0, loop.len))
 
+# the column names for the output file
 colnames(num.nas) = c("Years", 
                       "Tmin NA", "Tmin Seq", 
                       "Tmax NA", "Tmax Seq", 
                       "Prcp NA", "Prcp Seq")
 
+# set the initial year
 i.year = s.y
 
+# Loop through all years specified
 for (years in 0:loop.len){
   
   f.year = i.year+interval
@@ -53,17 +60,26 @@ for (years in 0:loop.len){
   i.year.name = as.Date(paste(i.year, "-01-01", sep = ""))
   f.year.name = as.Date(paste(f.year, "-12-31", sep = ""))
   
+  # find the specific entries for a particular year
   s.vec = which(i.year.name == DATES)
   f.vec = which(f.year.name == DATES)
   
+  # paste those entries into a dataframe that will be appended 
+  # missing data will be counted from this data frame
   sec.data = data.frame(DATES[s.vec:f.vec], 
                         hist.w$PRCP[s.vec:f.vec],
                         hist.w$TMAX[s.vec:f.vec],
                         hist.w$TMIN[s.vec:f.vec])
   
+  # name the columns of the newly created data
   colnames(sec.data) = c("DATE", "PRCP", "TMAX", "TMIN")
   
+  # find which days of precipitation are the USGS/NOAA defined
+  # NA value marker
   vec.prcp = which(sec.data$PRCP == -9999)
+  
+  # This if then statement finds the longest continuous 
+  # sequence of missing data for precipitation
   if (length(vec.prcp) != 0) {
     count = 1
     prcp.cm = 1
@@ -84,10 +100,14 @@ for (years in 0:loop.len){
     }
   }
   
+  # find the number of precipitation days that are NA '-9999'
   tot.prcp = length(vec.prcp)
   
+  # find the number of NA tmax days
   vec.tmax = which(sec.data$TMAX == -9999)
   
+  # This if then statement finds the longest continuous 
+  # sequence of missing data for tmax
   if (length(vec.tmax) != 0) {
     count = 1
     tmax.cm = 1
@@ -108,10 +128,13 @@ for (years in 0:loop.len){
     }
   }
   
+  # total number of days missing tmax data
   tot.tmax = length(vec.tmax)
   
   vec.tmin = which(sec.data$TMIN == -9999)
   
+  # This if then statement finds the longest continuous 
+  # sequence of missing data for tmin
   if (length(vec.tmin) != 0) {
     count = 1
     tmin.cm = 1
@@ -132,13 +155,14 @@ for (years in 0:loop.len){
       }
     }
   }
-  
+   # total number of days missing tmin data
   tot.tmin = length(vec.tmin)
   
   year.int = c(i.year, f.year)
   
   i.year = i.year + 1
   
+  # put all the data into the num.nas data frame
   num.nas[years,1] = paste(i.year,"-", f.year)
   num.nas[years,2] = tot.tmin
   num.nas[years,3] = tmin.cm
@@ -148,6 +172,7 @@ for (years in 0:loop.len){
   num.nas[years,7] = prcp.cm
 }
 
+# write the table to a csv
 write.table(num.nas, 
-            file = "Missing Data over 15 year seqeuence.csv", 
+            file = "Missing Data over 10 year seqeuence.csv", 
             sep = ",", row.names = FALSE)

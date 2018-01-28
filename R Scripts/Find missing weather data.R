@@ -5,19 +5,24 @@ rm(list = ls())
 set.dir.main = paste("C:/Users/Alexander Looi/Google Drive/Dropbox/NOAA_Wetlands_Ceili-Alex/",
                      "Alex's Folder/Historical Weather Data", sep = "")
 
-
+# define start year and end year
 Start.year = 1900
 End.year = 2014
 
+# define the data range
 data.range = 10
 
+weather.file.name = paste("Watertown Airport Weather Data", ".csv", sep = "")
+
+
+###################################################################################
+# Don't edite code paste this line #
+###################################################################################
 len.years = End.year - Start.year + 1 - (data.range - 1)
 
 seq.year = seq(Start.year, End.year)
 
 setwd(set.dir.main)
-
-weather.file.name = paste("Watertown Airport Weather Data", ".csv", sep = "")
 
 file.name = list.files(pattern = weather.file.name)
 
@@ -31,6 +36,7 @@ days = substr(WD$DATE, 7, 8)
 
 all.ind.years = length(seq.year)
 
+# create table and label columns
 missing.data = data.frame(rep(0, len.years), rep(0, len.years), 
                           rep(0, len.years), rep(0, len.years),
                           rep(0, len.years), rep(0, len.years))
@@ -49,6 +55,8 @@ all.years.data = data.frame(rep(0, all.ind.years), rep(0,all.ind.years),
 colnames(all.years.data) = c("year", "M.Prcp", "M.TMax", 
                              "M.TMin", "Mean.Prcp",
                              "SD.Prcp")
+
+# find the total number of missing days of data for each individual year
 for(y in 1:all.ind.years){
   
   year.vec = which(seq.year[y] == years)
@@ -85,6 +93,8 @@ prcp.x.y = seq.year[vec.y.na]
 prcp.x.n = seq.year[vec.n.na]
 
 #############################################################
+# find the mean daily precipitation for each year of data
+# then export a figure of the data
 png(filename = paste("1893-2014 yearly mean daily prcp.jpg", 
                      sep = ""),
     width = 1500, height = 900)
@@ -107,9 +117,8 @@ abline(0.1525, 0, lwd = LW) # line marking the mean daily rainfall of 2000-2014
 dev.off()
 graphics.off()
 
-
-
 # X # of year segments analysis
+#
 for(i in 1:len.years){
   
   years.obs = as.character(seq.year[i:(i+data.range-1)])
@@ -127,7 +136,6 @@ for(i in 1:len.years){
   prcp.na = which(data.prcp == -9999)
   TMin.na = which(data.TMin == -9999)
   TMax.na = which(data.TMax == -9999)
-  
   
   missing.data[i,2] = length(prcp.na)
   missing.data[i,3] = length(TMin.na)
@@ -172,6 +180,7 @@ for(y in 1:years.len){
   
 }
 
+# create a boxplot of missing daily precipitation data 
 data.box = boxplot(missing.data[,5], main = "Quartiles of mean daily Prcp",
                    ylim = c(0.13, 0.17), 
                    ylab = "mean daily prcp (cm)")
@@ -192,7 +201,7 @@ na.p = missing.data[p.na.vec, 5]
 
 da.p = missing.data[p.da.vec, 5]
 
-# Boxplots mean daily prcp 15 year segments
+# Boxplots of mean daily prcp 15 year segments
 
 png(filename = paste("Boxplots 1893-2014 mean daily prcp ",
                      "15 year segments and annual mean.jpg", 
@@ -209,7 +218,7 @@ boxplot(list(da.p, na.p, missing.data[,5]), #lwd = 2,
 abline(0.1525, 0) # line marking the mean daily rainfall of 2000-2014
 
 par(cex = 2, mar = c(4,2,1,1))
-# boxplots mean daily prcp
+# boxplots of mean daily prcp
 boxplot(list(prcp.n.na, prcp.y.na, all.years.data[,5]),
         # main = "Quartiles of mean daily Prcp (Yearly 1893-2014)",
         ylab = "", 
@@ -219,8 +228,9 @@ boxplot(list(prcp.n.na, prcp.y.na, all.years.data[,5]),
 abline(0.1525, 0) # line marking the mean daily rainfall of 2000-2014
 dev.off()
 graphics.off()
-# 1893 to 2014 mean daily prcp for 15 year segments
 
+# 1893 to 2014 mean daily prcp for 15 year segments
+# means plotted at for each 15 year segment
 png(filename = paste("prcp 15 year.png", sep = ""),
     width = 1500, height = 1500)
 
@@ -276,6 +286,7 @@ legend("center", c("missing prcp", "no missing prcp"),
 dev.off()
 graphics.off()
 
+# write out a table with summaries of missing data.
 write.table(missing.data, 
             file = paste("Missing Data ",data.range," years",".csv", sep=""), 
             quote = F, sep = ",", row.names = F)
